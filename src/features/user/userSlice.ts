@@ -1,4 +1,4 @@
-import { UserType } from "./../../shared/types";
+import { UserType, LoginType } from "./../../shared/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import customFetch, { checkForUnauthorizedResponse } from "../../utils/axios";
 import {
@@ -42,7 +42,7 @@ export const registerUser = createAsyncThunk(
 // login user
 export const loginUser = createAsyncThunk(
   "user/loginUser",
-  async (user: UserType, thunkAPI: any) => {
+  async (user: LoginType, thunkAPI: any) => {
     const url = "auth/login";
     try {
       const resp = await customFetch.post(url, user);
@@ -53,13 +53,13 @@ export const loginUser = createAsyncThunk(
   }
 );
 //logout user
-export const logout = createAsyncThunk("user/logout", async (thunkAPI: any) => {
+export const logout = createAsyncThunk("user/logout", async () => {
   const url = "auth/logout";
   try {
     const resp = await customFetch.delete(url);
     return resp.data;
   } catch (error: any) {
-    return thunkAPI.rejectWithValue(error.response.data.msg);
+    return error.response.data.msg;
   }
 });
 
@@ -69,7 +69,7 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    logoutUser: (state, { payload }) => {
+    logoutUser: (state) => {
       state.user = initialState.user;
       removeUserFromLocalStorage();
     },

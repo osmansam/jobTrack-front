@@ -5,3 +5,7 @@ export interface UserType {
   role: string;
   userId: string;
 }
+export interface LoginType {
+  email: string;
+  password: string;
+}
