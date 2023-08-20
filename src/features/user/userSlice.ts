@@ -38,7 +38,19 @@ export const registerUser = createAsyncThunk(
     }
   }
 );
-
+//googleLogin
+export const googleLogin = createAsyncThunk(
+  "user/googleLogin",
+  async (tokenId: string) => {
+    const url = "auth/googleLogin";
+    try {
+      const resp = await customFetch.post(url, { tokenId });
+      return resp.data;
+    } catch (error: any) {
+      return error.response.data.msg;
+    }
+  }
+);
 // login user
 export const loginUser = createAsyncThunk(
   "user/loginUser",
@@ -103,6 +115,20 @@ const userSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isUserLoading = false;
       })
+      .addCase(googleLogin.pending, (state, action) => {
+        state.isUserLoading = true;
+      })
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.isUserLoading = false;
+        state.isUserLoggedIn = true;
+        state.user = action.payload.user;
+        addUserToLocalStorage(state.user);
+      })
+      .addCase(googleLogin.rejected, (state, action) => {
+        state.isUserLoading = false;
+        console.log(action.payload);
+      })
+
       .addCase(logout.pending, (state, action) => {
         state.isUserLoading = true;
       })

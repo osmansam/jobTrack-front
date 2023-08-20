@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { loginUser } from "../../features/user/userSlice";
+import { loginUser, googleLogin } from "../../features/user/userSlice";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../store";
 import { useNavigate } from "react-router-dom";
 import { LoginType } from "../../shared/types";
+import jwtDecode from "jwt-decode";
+import { GoogleLogin } from "@react-oauth/google";
 
 type Props = {};
 
@@ -16,7 +18,16 @@ const Login = (props: Props) => {
     password: "",
   });
   const { isUserLoggedIn } = useSelector((state: RootState) => state.user);
-
+  const responseMessage = (response: any) => {
+    if (response.credential != null) {
+      dispatch(googleLogin(response.credential));
+    } else {
+      console.log("error");
+    }
+  };
+  const errorMessage = (error: any) => {
+    console.log(error);
+  };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginData((prev) => ({ ...prev, [name]: value }));
@@ -72,11 +83,15 @@ const Login = (props: Props) => {
 
           {/* buttons */}
           <button
-            className="bg-[#017bfe] text-white rounded-md py-2 px-4 w-1/2 mx-auto my-2 cursor-pointer"
+            className="bg-[#017bfe] text-white rounded-md py-2 px-4 w-1/2 mx-auto  cursor-pointer"
             onClick={handleLogin}
           >
             Giris Yap
           </button>
+
+          <div className="flex mx-auto px-10 items-center justify-center pb-4">
+            <GoogleLogin onSuccess={responseMessage} />
+          </div>
         </div>
       </div>
     </div>

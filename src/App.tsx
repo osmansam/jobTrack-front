@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -7,20 +7,11 @@ import { logout } from "./features/user/userSlice";
 import Deneme from "./pages/Deneme";
 import Osman from "./pages/Osman";
 import Login from "./pages/login";
-import jwtDecode from "jwt-decode";
+
 function App() {
   const dispatch = useAppDispatch();
   const { isUserLoggedIn } = useSelector((state: RootState) => state.user);
-  const responseMessage = (response: any) => {
-    console.log(response);
-    if (response.credential != null) {
-      const USER_CREDENTIAL = jwtDecode(response.credential);
-      console.log(USER_CREDENTIAL);
-    }
-  };
-  const errorMessage = (error: any) => {
-    console.log(error);
-  };
+
   const handleLogout = () => {
     dispatch(logout());
   };
@@ -34,7 +25,7 @@ function App() {
               path="/"
               element={
                 <div className="flex flex-col ">
-                  <h1>Home</h1>
+                  <h1>Hosgeldiniz</h1>
 
                   <button className="border-2" onClick={handleLogout}>
                     Logout
